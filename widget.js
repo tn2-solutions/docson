@@ -32,6 +32,11 @@ if (script.attributes["data-schema"]) {
         console.log("<", event)
         if (event.data.id && event.data.id == "docson") {
           var frame = document.getElementById(event.data.url);
+          console.log('frame = ' + frame);
+          if (frame == null) {
+            console.log('trying with replaced $');
+            frame = document.getElementById(event.data.url.replace(/\$/g, '%24'));
+          }
           if(event.data.action == "resized") {
             frame.height = event.data.height + 18;
           }

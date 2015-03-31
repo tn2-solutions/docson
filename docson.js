@@ -430,7 +430,7 @@ define(["lib/jquery", "lib/handlebars", "lib/highlight", "lib/jsonpointer", "lib
                 });
             };
 
-            var resolveRefsReentrant = function(schema){
+            var resolveRefsReentrant = function(schema, url){
                 traverse(schema).forEach(function(item) {
                     // Fix Swagger weird generation for array.
                     if(item && item.$ref == "array") {
@@ -452,7 +452,8 @@ define(["lib/jquery", "lib/handlebars", "lib/highlight", "lib/jsonpointer", "lib
                             //Internal reference
                             //Turning relative refs to absolute ones
                             external = true;
-                            item = baseUrl + item;
+                            //item = baseUrl + item;
+                            item = (url ? url : baseUrl) + item;
                             this.update(item);
                         }
                         if(external){
@@ -470,7 +471,9 @@ define(["lib/jquery", "lib/handlebars", "lib/highlight", "lib/jsonpointer", "lib
                                 if(content) {
                                     refs[item] = content;
                                     renderBox();
-                                    resolveRefsReentrant(content); 
+                                    var parts = segments[0].split('/');
+                                    var relUrl = parts.slice(0, parts.length - 1).join('/') + '/';
+                                    resolveRefsReentrant(content, relUrl); 
                                 }
                             });
                         }
@@ -478,7 +481,11 @@ define(["lib/jquery", "lib/handlebars", "lib/highlight", "lib/jsonpointer", "lib
                             //Local to this server, fetch relative
                             var segments = item.split("#");
                             refs[item] = null;
-                            var p = $.get(baseUrl + segments[0]).then(function(content) {
+                            console.log('1: segments[0]='+segments[0]);
+                            console.log('1: baseUrl='+baseUrl);
+                            console.log('1: url='+url);
+                            console.log('1: item='+item);
+                            var p = $.get((url ? url : baseUrl) + segments[0]).then(function(content) {
                                 if(typeof content != "object") {
                                     try {
                                         content = JSON.parse(content);
@@ -489,7 +496,13 @@ define(["lib/jquery", "lib/handlebars", "lib/highlight", "lib/jsonpointer", "lib
                                 if(content) {
                                     refs[item] = content;
                                     renderBox();
-                                    resolveRefsReentrant(content);
+                                    var parts = segments[0].split('/');
+                                    console.log('2: segments[0]='+segments[0]);
+                                    console.log('2: baseUrl='+baseUrl);
+                                    console.log('2: url='+url);
+                                    console.log('2: item='+item);
+                                    var relUrl = (url ? url : baseUrl) + parts.slice(0, parts.length - 1).join('/') + '/';
+                                    resolveRefsReentrant(content, relUrl);
                                 }
                             });
                         }
