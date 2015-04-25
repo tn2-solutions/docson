@@ -481,10 +481,10 @@ define(["lib/jquery", "lib/handlebars", "lib/highlight", "lib/jsonpointer", "lib
                             //Local to this server, fetch relative
                             var segments = item.split("#");
                             refs[item] = null;
-                            console.log('1: segments[0]='+segments[0]);
-                            console.log('1: baseUrl='+baseUrl);
-                            console.log('1: url='+url);
-                            console.log('1: item='+item);
+                            //console.log('1: segments[0]='+segments[0]);
+                            //console.log('1: baseUrl='+baseUrl);
+                            //console.log('1: url='+url);
+                            //console.log('1: item='+item);
                             var p = $.get((url ? url : baseUrl) + segments[0]).then(function(content) {
                                 if(typeof content != "object") {
                                     try {
@@ -494,13 +494,17 @@ define(["lib/jquery", "lib/handlebars", "lib/highlight", "lib/jsonpointer", "lib
                                     }
                                 }
                                 if(content) {
-                                    refs[item] = content;
+                                    if (item.indexOf('#') > 0) {
+                                        refs[item] = jsonpointer.get(content, '#' + item.split('#')[1]);
+                                    } else {
+                                        refs[item] = content;
+                                    }
                                     renderBox();
                                     var parts = segments[0].split('/');
-                                    console.log('2: segments[0]='+segments[0]);
-                                    console.log('2: baseUrl='+baseUrl);
-                                    console.log('2: url='+url);
-                                    console.log('2: item='+item);
+                                    //console.log('2: segments[0]='+segments[0]);
+                                    //console.log('2: baseUrl='+baseUrl);
+                                    //console.log('2: url='+url);
+                                    //console.log('2: item='+item);
                                     var relUrl = (url ? url : baseUrl) + parts.slice(0, parts.length - 1).join('/') + '/';
                                     resolveRefsReentrant(content, relUrl);
                                 }
