@@ -29,19 +29,19 @@ if (script.attributes["data-schema"]) {
         docson + "#" +
         script.attributes["data-schema"].value + "'></iframe>");
     function receiveMessage(event) {
-        console.log("<", event)
+        // console.log("<", event)
         if (event.data.id && event.data.id == "docson") {
           var frame = document.getElementById(event.data.url);
-          console.log('frame = ' + frame);
+          // console.log('frame = ' + frame);
           if (frame == null) {
-            console.log('trying with replaced $');
+            // console.log('trying with replaced $');
             frame = document.getElementById(event.data.url.replace(/\$/g, '%24'));
           }
           if(event.data.action == "resized") {
             frame.height = event.data.height + 18;
           }
           if(event.data.action == "ready") {
-            console.log(frame.parentNode)
+            // console.log(frame.parentNode)
             frame.contentWindow.postMessage({ id: "docson", font: window.getComputedStyle(frame.parentNode).fontFamily}, "*");
           }
         }

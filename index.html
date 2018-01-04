@@ -70,7 +70,7 @@
                             }
                         }
                         function receiveMessage(event) {
-                            console.log(">", event)
+                            // console.log(">", event)
                             if(event.data.id && event.data.id == "docson") {
                                 if(event.data.type) {
                                     try {
@@ -85,7 +85,7 @@
                                     $("#doc").get(0).resized();
                                 }
                                 if(event.data.font) {
-                                    console.log(event.data.font)
+                                    // console.log(event.data.font)
                                     $("#doc").css("font-family", event.data.font);
                                 }
                             }
